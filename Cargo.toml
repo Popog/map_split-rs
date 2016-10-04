@@ -1,8 +1,9 @@
 [package]
 name = "map_split"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Popog"]
 description = "A library providing simultaneous mutable access to disjoint portions values stored in a hash map."
+build = "build.rs"
 repository = "https://github.com/Popog/map_split-rs"
 readme = "README.md"
 keywords = ["hashmap", "split", "map"]
