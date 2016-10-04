@@ -10,30 +10,32 @@ use std::collections::hash_map::{Iter, IterMut};
 pub trait Splittable<'a, SplitType = ()> {
     type A: 'a;
     type B: 'a;
+    type MutA: 'a;
+    type MutB: 'a;
 
-    fn split(&'a self) -> (&'a Self::A, &'a Self::B);
-    fn split_mut(&'a mut self) -> (&'a mut Self::A, &'a mut Self::B);
+    fn split(&'a self) -> (Self::A, Self::B);
+    fn split_mut(&'a mut self) -> (Self::MutA, Self::MutB);
 }
 
 include!(concat!(env!("OUT_DIR"), "/splittable.rs"));
 
 
 // iter a helper
-fn iter_a_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a V)) -> (&'a K, &'a <V as Splittable<'a, SplitType>>::A)
+fn iter_a_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a V)) -> (&'a K, <V as Splittable<'a, SplitType>>::A)
 where V: Splittable<'a, SplitType> {
     (k, v.split().0)
 }
-fn iter_mut_a_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a mut V)) -> (&'a K, &'a mut <V as Splittable<'a, SplitType>>::A)
+fn iter_mut_a_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a mut V)) -> (&'a K, <V as Splittable<'a, SplitType>>::MutA)
 where V: Splittable<'a, SplitType> {
     (k, v.split_mut().0)
 }
 
-fn iter_b_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a V)) -> (&'a K, &'a <V as Splittable<'a, SplitType>>::B)
+fn iter_b_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a V)) -> (&'a K, <V as Splittable<'a, SplitType>>::B)
 where V: Splittable<'a, SplitType> {
     (k, v.split().1)
 }
 
-fn iter_mut_b_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a mut V)) -> (&'a K, &'a mut <V as Splittable<'a, SplitType>>::B)
+fn iter_mut_b_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a mut V)) -> (&'a K, <V as Splittable<'a, SplitType>>::MutB)
 where V: Splittable<'a, SplitType> {
     (k, v.split_mut().1)
 }
@@ -58,7 +60,7 @@ where K: Eq + Hash, S: BuildHasher {
     /// `(&'b K, &'b V::A)`.
     pub fn iter<'b>(&'b self) -> iter::Map<
         Iter<'b, K, V>,
-        fn((&'b K, &'b V)) -> (&'b K, &'b <V as Splittable<'b, SplitType>>::A),
+        fn((&'b K, &'b V)) -> (&'b K, <V as Splittable<'b, SplitType>>::A),
     >
     where V: Splittable<'b, SplitType> {
         self.1.iter().map(iter_a_helper::<'b, K, V, SplitType>)
@@ -68,7 +70,7 @@ where K: Eq + Hash, S: BuildHasher {
     /// `(&'b K, &'b mut V::A)`.
     pub fn iter_mut<'b>(&'b mut self) -> iter::Map<
         IterMut<'b, K, V>,
-        fn((&'b K, &'b mut V)) -> (&'b K, &'b mut <V as Splittable<'b, SplitType>>::A),
+        fn((&'b K, &'b mut V)) -> (&'b K, <V as Splittable<'b, SplitType>>::MutA),
     >
     where V: Splittable<'b, SplitType>
         {
@@ -91,7 +93,7 @@ where K: Eq + Hash, S: BuildHasher {
     ///
     /// The key may be any borrowed form of the map's key type, but `Hash` and `Eq` on the borrowed
     /// form must match those for the key type.
-    pub fn get<'b, Q: ?Sized>(&'b self, k: &Q) -> Option<&'b <V as Splittable<'b, SplitType>>::A>
+    pub fn get<'b, Q: ?Sized>(&'b self, k: &Q) -> Option<<V as Splittable<'b, SplitType>>::A>
     where Q: Hash + Eq, K: Borrow<Q>, V: Splittable<'b, SplitType> {
         self.1.get(k).map(|v| v.split().0)
     }
@@ -100,7 +102,7 @@ where K: Eq + Hash, S: BuildHasher {
     ///
     /// The key may be any borrowed form of the map's key type, but `Hash` and `Eq` on the borrowed
     /// form must match those for the key type.
-    pub fn get_mut<'b, Q: ?Sized>(&'b mut self, k: &Q) -> Option<&'b mut <V as Splittable<'b, SplitType>>::A>
+    pub fn get_mut<'b, Q: ?Sized>(&'b mut self, k: &Q) -> Option<<V as Splittable<'b, SplitType>>::MutA>
     where Q: Hash + Eq, K: Borrow<Q>, V: Splittable<'b, SplitType> {
         self.1.get_mut(k).map(|v| v.split_mut().0)
     }
@@ -112,7 +114,7 @@ where K: Eq + Hash, S: BuildHasher {
     /// `(&'b K, &'b V::B)`.
     pub fn iter<'b>(&'b self) -> iter::Map<
         Iter<'b, K, V>,
-        fn((&'b K, &'b V)) -> (&'b K, &'b <V as Splittable<'b, SplitType>>::B),
+        fn((&'b K, &'b V)) -> (&'b K, <V as Splittable<'b, SplitType>>::B),
     >
     where V: Splittable<'b, SplitType> {
         self.1.iter().map(iter_b_helper::<'b, K, V, SplitType>)
@@ -122,7 +124,7 @@ where K: Eq + Hash, S: BuildHasher {
     /// `(&'b K, &'b mut V::B)`.
     pub fn iter_mut<'b>(&'b mut self) -> iter::Map<
         IterMut<'b, K, V>,
-        fn((&'b K, &'b mut V)) -> (&'b K, &'b mut <V as Splittable<'b, SplitType>>::B),
+        fn((&'b K, &'b mut V)) -> (&'b K, <V as Splittable<'b, SplitType>>::MutB),
     >
     where V: Splittable<'b, SplitType>
         {
@@ -145,7 +147,7 @@ where K: Eq + Hash, S: BuildHasher {
     ///
     /// The key may be any borrowed form of the map's key type, but `Hash` and `Eq` on the borrowed
     /// form must match those for the key type.
-    pub fn get<'b, Q: ?Sized>(&'b self, k: &Q) -> Option<&'b <V as Splittable<'b, SplitType>>::B>
+    pub fn get<'b, Q: ?Sized>(&'b self, k: &Q) -> Option<<V as Splittable<'b, SplitType>>::B>
     where Q: Hash + Eq, K: Borrow<Q>, V: Splittable<'b, SplitType> {
         self.1.get(k).map(|v| v.split().1)
     }
@@ -154,7 +156,7 @@ where K: Eq + Hash, S: BuildHasher {
     ///
     /// The key may be any borrowed form of the map's key type, but `Hash` and `Eq` on the borrowed
     /// form must match those for the key type.
-    pub fn get_mut<'b, Q: ?Sized>(&'b mut self, k: &Q) -> Option<&'b mut <V as Splittable<'b, SplitType>>::B>
+    pub fn get_mut<'b, Q: ?Sized>(&'b mut self, k: &Q) -> Option<<V as Splittable<'b, SplitType>>::MutB>
     where Q: Hash + Eq, K: Borrow<Q>, V: Splittable<'b, SplitType> {
         self.1.get_mut(k).map(|v| v.split_mut().1)
     }
@@ -193,21 +195,27 @@ mod test {
     }
 
     impl<'a> Splittable<'a> for Pair {
-        type A = i32;
-        type B = f32;
-        fn split(&self) -> (&Self::A, &Self::B) { (&self.a, &self.b) }
-        fn split_mut(&mut self) -> (&mut Self::A, &mut Self::B) { (&mut self.a, &mut self.b) }
+        type A = &'a i32;
+        type B = &'a f32;
+        type MutA = &'a mut i32;
+        type MutB = &'a mut f32;
+        fn split(&'a self) -> (Self::A, Self::B) { (&self.a, &self.b) }
+        fn split_mut(&'a mut self) -> (Self::MutA, Self::MutB) { (&mut self.a, &mut self.b) }
     }
 
     impl<'a> Splittable4<'a> for Quad {
-        type A = i32;
-        type B = f32;
-        type C = u32;
-        type D = f64;
-        fn split4(&self) -> (&Self::A, &Self::B, &Self::C, &Self::D) {
+        type A = &'a i32;
+        type B = &'a f32;
+        type C = &'a u32;
+        type D = &'a f64;
+        type MutA = &'a mut i32;
+        type MutB = &'a mut f32;
+        type MutC = &'a mut u32;
+        type MutD = &'a mut f64;
+        fn split4(&'a self) -> (Self::A, Self::B, Self::C, Self::D) {
             (&self.a, &self.b, &self.c, &self.d)
         }
-        fn split4_mut(&mut self) -> (&mut Self::A, &mut Self::B, &mut Self::C, &mut Self::D) {
+        fn split4_mut(&'a mut self) -> (Self::MutA, Self::MutB, Self::MutC, Self::MutD) {
             (&mut self.a, &mut self.b, &mut self.c, &mut self.d)
         }
     }

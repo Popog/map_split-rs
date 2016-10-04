@@ -17,17 +17,18 @@ pub fn build_trait(out_dir: &String) -> Result<()> {
 // ways.
 pub trait Splittable{n}<'a, SplitType = ()> {{\n", n=i));
         for j in 0..i {
-            try!(write!(f, "\ttype {A}: 'a;\n", A=('A' as u8 + j) as char));
+            try!(write!(f, "    type {A}: 'a;
+    type Mut{A}: 'a;\n", A=('A' as u8 + j) as char));
         }
         try!(write!(f, "
     fn split{n}(&'a self) -> (", n=i));
         for j in 0..i {
-            try!(write!(f, "&'a Self::{A}, ", A=('A' as u8 + j) as char));
+            try!(write!(f, "Self::{A}, ", A=('A' as u8 + j) as char));
         }
         try!(write!(f, ");
     fn split{n}_mut(&'a mut self) -> (", n=i));
         for j in 0..i {
-            try!(write!(f, "&'a mut Self::{A}, ", A=('A' as u8 + j) as char));
+            try!(write!(f, "Self::Mut{A}, ", A=('A' as u8 + j) as char));
         }
         try!(write!(f, ");\n}}\n"));
 
@@ -35,9 +36,12 @@ pub trait Splittable{n}<'a, SplitType = ()> {{\n", n=i));
         for j in 0..i-1 {
             try!(write!(f, "\ttype {A} = <Self as Splittable{n}<'a, SplitType>>::{A};\n", A=('A' as u8 + j) as char, n=i));
         }
+        for j in 0..i-1 {
+            try!(write!(f, "\ttype Mut{A} = <Self as Splittable{n}<'a, SplitType>>::Mut{A};\n", A=('A' as u8 + j) as char, n=i));
+        }
         try!(write!(f, "\n\tfn split{nm1}(&'a self) -> (", nm1=nm1));
         for j in 0..i-1 {
-            try!(write!(f, "&'a Self::{A}, ", A=('A' as u8 + j) as char));
+            try!(write!(f, "Self::{A}, ", A=('A' as u8 + j) as char));
         }
         try!(write!(f, ") {{
         let r = self.split{n}();
@@ -49,7 +53,7 @@ pub trait Splittable{n}<'a, SplitType = ()> {{\n", n=i));
     }}
     fn split{nm1}_mut(&'a mut self) -> (", nm1=nm1));
         for j in 0..i-1 {
-            try!(write!(f, "&'a mut Self::{A}, ", A=('A' as u8 + j) as char));
+            try!(write!(f, "Self::Mut{A}, ", A=('A' as u8 + j) as char));
         }
         try!(write!(f, ") {{
         let r = self.split{n}_mut();
@@ -71,12 +75,13 @@ pub fn build_helpers(out_dir: &String) -> Result<()> {
     for i in 3..(MAX_TYPES+1) {
         try!(write!(f, "
 fn iter_{a}_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a V)) ->
-    (&'a K, &'a <V as Splittable{n}<'a, SplitType>>::{A})
+    (&'a K, <V as Splittable{n}<'a, SplitType>>::{A})
 where V: Splittable{n}<'a, SplitType> {{
     (k, v.split{n}().{nm1})
 }}
 
-fn iter_mut_{a}_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a mut V)) -> (&'a K, &'a mut <V as Splittable{n}<'a, SplitType>>::{A})
+fn iter_mut_{a}_helper<'a, K: 'a, V: 'a, SplitType>((k, v): (&'a K, &'a mut V)) ->
+    (&'a K, <V as Splittable{n}<'a, SplitType>>::Mut{A})
 where V: Splittable{n}<'a, SplitType> {{
     (k, v.split{n}_mut().{nm1})
 }}
@@ -114,7 +119,7 @@ where K: Eq + Hash, S: BuildHasher {{
     /// `(&'b K, &'b V::{A})`.
     pub fn iter<'b>(&'b self) -> iter::Map<
         Iter<'b, K, V>,
-        fn((&'b K, &'b V)) -> (&'b K, &'b <V as Splittable{n}<'b, SplitType>>::{A}),
+        fn((&'b K, &'b V)) -> (&'b K, <V as Splittable{n}<'b, SplitType>>::{A}),
     >
     where V: Splittable{n}<'b, SplitType> {{
         self.1.iter().map(iter_{a}_helper::<'b, K, V, SplitType>)
@@ -124,7 +129,7 @@ where K: Eq + Hash, S: BuildHasher {{
     /// `(&'b K, &'b mut V::{A})`.
     pub fn iter_mut<'b>(&'b mut self) -> iter::Map<
         IterMut<'b, K, V>,
-        fn((&'b K, &'b mut V)) -> (&'b K, &'b mut <V as Splittable{n}<'b, SplitType>>::{A}),
+        fn((&'b K, &'b mut V)) -> (&'b K, <V as Splittable{n}<'b, SplitType>>::Mut{A}),
     >
     where V: Splittable{n}<'b, SplitType> {{
         self.1.iter_mut().map(iter_mut_{a}_helper::<'b, K, V, SplitType>)
@@ -146,7 +151,7 @@ where K: Eq + Hash, S: BuildHasher {{
     ///
     /// The key may be any borrowed form of the map's key type, but `Hash` and `Eq` on the borrowed
     /// form must match those for the key type.
-    pub fn get<'b, Q: ?Sized>(&'b self, k: &Q) -> Option<&'b <V as Splittable{n}<'b, SplitType>>::{A}>
+    pub fn get<'b, Q: ?Sized>(&'b self, k: &Q) -> Option<<V as Splittable{n}<'b, SplitType>>::{A}>
     where Q: Hash + Eq, K: Borrow<Q>, V: Splittable{n}<'b, SplitType> {{
         self.1.get(k).map(|v| v.split{n}().{nm1})
     }}
@@ -155,7 +160,7 @@ where K: Eq + Hash, S: BuildHasher {{
     ///
     /// The key may be any borrowed form of the map's key type, but `Hash` and `Eq` on the borrowed
     /// form must match those for the key type.
-    pub fn get_mut<'b, Q: ?Sized>(&'b mut self, k: &Q) -> Option<&'b mut <V as Splittable{n}<'b, SplitType>>::{A}>
+    pub fn get_mut<'b, Q: ?Sized>(&'b mut self, k: &Q) -> Option<<V as Splittable{n}<'b, SplitType>>::Mut{A}>
     where Q: Hash + Eq, K: Borrow<Q>, V: Splittable{n}<'b, SplitType> {{
         self.1.get_mut(k).map(|v| v.split{n}_mut().{nm1})
     }}
