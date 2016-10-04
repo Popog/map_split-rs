@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `split19` fn in crate `map_split`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, split19">
+
+    <title>map_split::split19 - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>map_split</a></p><script>window.sidebarCurrent = {name: 'split19', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content fn">
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>map_split</a>::<wbr><a class='fn' href=''>split19</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-3391' class='srclink' href='../src/map_split/home/travis/build/Popog/map_split-rs/target/debug/build/map_split-3dc700f88ede03c5/out/split.rs.html#132-136' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn split19&lt;'a,&nbsp;K:&nbsp;'a,&nbsp;V:&nbsp;'a,&nbsp;S,&nbsp;SplitType&gt;(v: &amp;'a mut <a class='struct' href='https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html' title='std::collections::hash::map::HashMap'>HashMap</a>&lt;K,&nbsp;V,&nbsp;S&gt;) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='../map_split/struct.HashMapA.html' title='map_split::HashMapA'>HashMapA</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapB.html' title='map_split::HashMapB'>HashMapB</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapC.html' title='map_split::HashMapC'>HashMapC</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapD.html' title='map_split::HashMapD'>HashMapD</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapE.html' title='map_split::HashMapE'>HashMapE</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapF.html' title='map_split::HashMapF'>HashMapF</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapG.html' title='map_split::HashMapG'>HashMapG</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapH.html' title='map_split::HashMapH'>HashMapH</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapI.html' title='map_split::HashMapI'>HashMapI</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapJ.html' title='map_split::HashMapJ'>HashMapJ</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapK.html' title='map_split::HashMapK'>HashMapK</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapL.html' title='map_split::HashMapL'>HashMapL</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapM.html' title='map_split::HashMapM'>HashMapM</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapN.html' title='map_split::HashMapN'>HashMapN</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapO.html' title='map_split::HashMapO'>HashMapO</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapP.html' title='map_split::HashMapP'>HashMapP</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapQ.html' title='map_split::HashMapQ'>HashMapQ</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapR.html' title='map_split::HashMapR'>HashMapR</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;, <a class='struct' href='../map_split/struct.HashMapS.html' title='map_split::HashMapS'>HashMapS</a>&lt;'a,&nbsp;K,&nbsp;V,&nbsp;S,&nbsp;SplitType&gt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a> <span class='where'>where K: <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a>, S: <a class='trait' href='https://doc.rust-lang.org/nightly/core/hash/trait.BuildHasher.html' title='core::hash::BuildHasher'>BuildHasher</a>, V: <a class='trait' href='../map_split/trait.Splittable19.html' title='map_split::Splittable19'>Splittable19</a>&lt;'a,&nbsp;SplitType&gt;</span></pre><div class='docblock'><p>Splits a <code>HashMap</code> into 19 disjoint hashmap references, able to access the split parts of the
+stored <code>Splittable19</code> values independently.</p>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "map_split";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
